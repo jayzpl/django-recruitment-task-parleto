@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.views.generic.list import ListView
 
 from .forms import ExpenseSearchForm
@@ -15,14 +17,22 @@ class ExpenseListView(ListView):
         form = ExpenseSearchForm(self.request.GET)
         if form.is_valid():
             name = form.cleaned_data.get('name', '').strip()
+            date_from = form.cleaned_data.get('date_from', '')
+            date_to = form.cleaned_data.get('date_to', '')
+            print(name, date_from, date_to)
             if name:
                 queryset = queryset.filter(name__icontains=name)
+            if date_from:
+                queryset = queryset.filter(date__range=[str(date_from), str(datetime.today().date())])
+            if date_to:
+                queryset = queryset.filter(date__range=[str(date_from), str(date_to)])
 
         return super().get_context_data(
             form=form,
             object_list=queryset,
             summary_per_category=summary_per_category(queryset),
             **kwargs)
+
 
 class CategoryListView(ListView):
     model = Category
