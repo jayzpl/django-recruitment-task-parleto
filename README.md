@@ -1,0 +1,1 @@
+# django-recruitment-task-parleto
