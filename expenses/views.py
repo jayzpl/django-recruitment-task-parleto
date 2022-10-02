@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.views.generic.list import ListView
-
+from django.db.models import Sum
 from .forms import ExpenseSearchForm, Sorting
 from .models import Expense, Category
 from .reports import summary_per_category
@@ -21,7 +21,7 @@ class ExpenseListView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         queryset = object_list if object_list is not None else self.object_list
-
+        total_amount = 0
         form = ExpenseSearchForm(self.request.GET)
         if form.is_valid():
             name = form.cleaned_data.get('name', '').strip()
@@ -46,10 +46,14 @@ class ExpenseListView(ListView):
             if categories_sorting:
                 queryset = sort_query_if_possible(queryset, categories_sorting, 'category')
 
+            total_amount = queryset.aggregate(Sum('amount'))['amount__sum']
+            print(total_amount)
+
         return super().get_context_data(
             form=form,
             object_list=queryset,
             summary_per_category=summary_per_category(queryset),
+            total_amount=total_amount,
             **kwargs)
 
 
