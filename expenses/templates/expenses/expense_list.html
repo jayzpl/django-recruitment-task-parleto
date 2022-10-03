@@ -63,9 +63,9 @@
 <table border="1">
   <caption>Summary per year</caption>
   <tr>
-    {% for category, total in summary_per_category.items %}
+    {% for year, total in summary_per_year.items %}
 	<tr>
-		<td>{{category}}:</td>
+		<td>{{year}}:</td>
 		<td>{{total|floatformat:2}}</td>
 	</tr>
 	{% endfor %}
@@ -75,9 +75,9 @@
 <table border="1">
   <caption>Summary per month</caption>
   <tr>
-    {% for category, total in summary_per_category.items %}
+    {% for month, total in summary_per_month.items %}
 	<tr>
-		<td>{{category}}:</td>
+		<td>{{month}}:</td>
 		<td>{{total|floatformat:2}}</td>
 	</tr>
 	{% endfor %}

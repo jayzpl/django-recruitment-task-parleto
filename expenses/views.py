@@ -24,8 +24,6 @@ class ExpenseListView(ListView):
             queryset = generate_search_result(queryset, name, date_from, date_to, categories, date_sorting,
                                               categories_sorting)
 
-            total_amount = calculate_total_amount(queryset)
-            summary_year = summary_per_year(queryset)
             summary_month = summary_per_month(queryset)
 
 
@@ -33,7 +31,9 @@ class ExpenseListView(ListView):
             form=form,
             object_list=queryset,
             summary_per_category=summary_per_category(queryset),
-            total_amount=total_amount,
+            summary_per_year=summary_per_year(queryset),
+            summary_per_month=summary_per_month(queryset),
+            total_amount=calculate_total_amount(queryset),
             **kwargs)
 
 
