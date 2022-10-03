@@ -11,7 +11,6 @@ class ExpenseListView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         queryset = object_list if object_list is not None else self.object_list
-        total_amount = 0
         form = ExpenseSearchForm(self.request.GET)
         if form.is_valid():
             name = form.cleaned_data.get('name', '').strip()
@@ -23,9 +22,6 @@ class ExpenseListView(ListView):
 
             queryset = generate_search_result(queryset, name, date_from, date_to, categories, date_sorting,
                                               categories_sorting)
-
-            summary_month = summary_per_month(queryset)
-
 
         return super().get_context_data(
             form=form,

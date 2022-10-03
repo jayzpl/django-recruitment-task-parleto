@@ -75,9 +75,9 @@
 <table border="1">
   <caption>Summary per month</caption>
   <tr>
-    {% for month, total in summary_per_month.items %}
+    {% for date, total in summary_per_month.items %}
 	<tr>
-		<td>{{month}}:</td>
+		<td>{{date}}:</td>
 		<td>{{total|floatformat:2}}</td>
 	</tr>
 	{% endfor %}

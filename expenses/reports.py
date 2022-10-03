@@ -20,28 +20,31 @@ def summary_per_category(queryset):
     ))
 
 
-def summary_per_year(queryset):
+def create_list_of_years(queryset):
     year_in_queryset = [i[0].year for i in queryset.values_list('date')]
-    year_in_queryset = [*set(year_in_queryset)]
+    return [*set(year_in_queryset)]
+
+
+def summary_per_year(queryset):
+    year_in_queryset = create_list_of_years(queryset)
     amounts_per_year = {}
     for year in year_in_queryset:
-        amounts_per_year[year] = queryset.filter(date__year__gte=year, date__year__lte=year).aggregate(Sum('amount'))['amount__sum']
+        amounts_per_year[year] = queryset.filter(date__year__gte=year, date__year__lte=year).aggregate(Sum('amount'))[
+            'amount__sum']
     return amounts_per_year
 
 
 def summary_per_month(queryset):
-    # add filter using year and month
-    months_in_queryset = [i[0] for i in queryset.values_list('date').order_by()]
-    print(months_in_queryset)
-    print([*set(months_in_queryset)])
-    """
-    months_in_queryset = [*set(months_in_queryset)]
-    amounts_per_month = {}
-    for month in months_in_queryset:
-        _temp = queryset.filter(date__month__gte=month, date__month__lte=month).aggregate(Sum('amount'))[
-            'amount__sum']
-        month = calendar.month_name[month]
-        amounts_per_month[month] = _temp
-    return amounts_per_month
-    """
-    return queryset
+    year_in_queryset = create_list_of_years(queryset)
+    amount_per_each_month_in_year = {}
+    for year in year_in_queryset:
+        months_in_year = []
+        for data_row in queryset.filter(date__year=year).values_list():
+            months_in_year.append(data_row[4].month)
+        months_in_year = [*set(months_in_year)]
+        for month in months_in_year:
+            amount_per_each_month_in_year[f'{year}-{calendar.month_name[month]}'] = \
+                queryset.filter(date__year=year, date__month__gte=month, date__month__lte=month).aggregate(
+                    Sum('amount'))['amount__sum']
+    print(amount_per_each_month_in_year)
+    return amount_per_each_month_in_year
