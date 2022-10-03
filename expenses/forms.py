@@ -20,6 +20,7 @@ class ExpenseSearchForm(forms.ModelForm):
                                                    choices=((Sorting.ASC, Sorting.ASC.value),
                                                             (Sorting.DSC, Sorting.DSC.value)), required=False)
 
+
     class Meta:
         model = Expense
         fields = ('name',)

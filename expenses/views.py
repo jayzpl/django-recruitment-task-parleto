@@ -1,18 +1,8 @@
-from datetime import datetime
-
 from django.views.generic.list import ListView
-from django.db.models import Sum
-from .forms import ExpenseSearchForm, Sorting
+from .forms import ExpenseSearchForm
 from .models import Expense, Category
-from .reports import summary_per_category
-
-
-def sort_query_if_possible(queryset, sort_type: list[str], field: str):
-    if sort_type[0] == str(Sorting.ASC) and len(sort_type) < 2:
-        queryset = queryset.order_by(f"{field}")
-    if sort_type[0] == str(Sorting.DSC) and len(sort_type) < 2:
-        queryset = queryset.order_by(f"-{field}")
-    return queryset
+from .reports import summary_per_category, calculate_total_amount
+from .queries import generate_search_result
 
 
 class ExpenseListView(ListView):
@@ -31,23 +21,10 @@ class ExpenseListView(ListView):
             date_sorting = form.cleaned_data.get('date_sorting')
             categories_sorting = form.cleaned_data.get('categories_sorting')
 
-            if name:
-                queryset = queryset.filter(name__icontains=name)
-            if date_from and date_to is None:
-                queryset = queryset.filter(date__range=[date_from, datetime.today().date()])
-            if date_to and date_from:
-                queryset = queryset.filter(date__range=[date_from, date_to])
-            if date_to and date_from is None:
-                queryset = queryset.filter(date__lte=date_to)
-            if categories:
-                queryset = queryset.filter(category__id__in=categories)
-            if date_sorting:
-                queryset = sort_query_if_possible(queryset, date_sorting, 'date')
-            if categories_sorting:
-                queryset = sort_query_if_possible(queryset, categories_sorting, 'category')
+            queryset = generate_search_result(queryset, name, date_from, date_to, categories, date_sorting,
+                                              categories_sorting)
 
-            total_amount = queryset.aggregate(Sum('amount'))['amount__sum']
-            print(total_amount)
+            total_amount = calculate_total_amount(queryset)
 
         return super().get_context_data(
             form=form,
