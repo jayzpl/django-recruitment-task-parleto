@@ -1,9 +1,8 @@
 from .forms import Sorting
 from datetime import datetime
-from .models import Expense
 
 
-def sort_if_possible_by_field(queryset, sort_type: list[str], field: str):
+def sort_by_field(queryset, sort_type: list[str], field: str):
     if sort_type[0] == str(Sorting.ASC) and len(sort_type) < 2:
         queryset = queryset.order_by(f"{field}")
     if sort_type[0] == str(Sorting.DSC) and len(sort_type) < 2:
@@ -11,19 +10,51 @@ def sort_if_possible_by_field(queryset, sort_type: list[str], field: str):
     return queryset
 
 
-def generate_search_result(queryset, name, date_from, date_to, categories, date_sorting, categories_sorting):
+def search_by_name(queryset, name):
     if name:
-        queryset = queryset.filter(name__icontains=name)
-    if date_from and date_to is None:
-        queryset = queryset.filter(date__range=[date_from, datetime.today().date()])
+        return queryset.filter(name__icontains=name)
+    else:
+        return queryset
+
+
+def search_between_dates(queryset, date_from, date_to):
     if date_to and date_from:
-        queryset = queryset.filter(date__range=[date_from, date_to])
+        return queryset.filter(date__range=[date_from, date_to])
+    else:
+        return queryset
+
+
+def search_from_date(queryset, date_from, date_to):
+    if date_from and date_to is None:
+        return queryset.filter(date__range=[date_from, datetime.today().date()])
+    else:
+        return queryset
+
+
+def search_to_date(queryset, date_from, date_to):
     if date_to and date_from is None:
-        queryset = queryset.filter(date__lte=date_to)
+        return queryset.filter(date__lte=date_to)
+    else:
+        return queryset
+
+
+def search_by_categories(queryset, categories):
     if categories:
-        queryset = queryset.filter(category__id__in=categories)
+        return queryset.filter(category__id__in=categories)
+    else:
+        return queryset
+
+
+def sort_by_date(queryset, date_sorting):
     if date_sorting:
-        queryset = sort_if_possible_by_field(queryset, date_sorting, 'date')
+        return sort_by_field(queryset, date_sorting, 'date')
+    else:
+        return queryset
+
+
+def sort_by_categories(queryset, categories_sorting):
     if categories_sorting:
-        queryset = sort_if_possible_by_field(queryset, categories_sorting, 'category')
-    return queryset
+        return sort_by_field(queryset, categories_sorting, 'category')
+    else:
+        return queryset
+
