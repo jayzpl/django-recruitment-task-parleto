@@ -1,8 +1,8 @@
 from django.views.generic.list import ListView
 from .forms import ExpenseSearchForm
 from .models import Expense, Category
-from .reports import summary_per_category, calculate_total_amount
-from .queries import generate_search_result
+from .reports import summary_per_category, calculate_total_amount, summary_per_year, summary_per_month
+from .searching import generate_search_result
 
 
 class ExpenseListView(ListView):
@@ -25,6 +25,9 @@ class ExpenseListView(ListView):
                                               categories_sorting)
 
             total_amount = calculate_total_amount(queryset)
+            summary_year = summary_per_year(queryset)
+            summary_month = summary_per_month(queryset)
+
 
         return super().get_context_data(
             form=form,

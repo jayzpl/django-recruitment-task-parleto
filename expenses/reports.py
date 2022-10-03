@@ -17,3 +17,14 @@ def summary_per_category(queryset):
             .annotate(s=Sum('amount'))
             .values_list('category_name', 's')
     ))
+
+
+def summary_per_year(queryset):
+    print(queryset)
+    print(queryset
+          .values_list('date')
+          )
+
+
+def summary_per_month(queryset):
+    pass
