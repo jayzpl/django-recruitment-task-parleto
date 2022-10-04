@@ -41,3 +41,13 @@ class ExpenseListView(ListView):
 class CategoryListView(ListView):
     model = Category
     paginate_by = 5
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        expenses_per_category = count_expenses_per_category()
+        expenses_per_category = list(zip(self.object_list, expenses_per_category))
+
+        return super().get_context_data(
+            object_list=expenses_per_category,
+            **kwargs)
+
+
