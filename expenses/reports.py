@@ -1,5 +1,5 @@
 from collections import OrderedDict
-
+from .models import Category, Expense
 from django.db.models import Sum, Value
 from django.db.models.functions import Coalesce
 import calendar
@@ -46,5 +46,13 @@ def summary_per_month(queryset):
             amount_per_each_month_in_year[f'{year}-{calendar.month_name[month]}'] = \
                 queryset.filter(date__year=year, date__month__gte=month, date__month__lte=month).aggregate(
                     Sum('amount'))['amount__sum']
-    print(amount_per_each_month_in_year)
     return amount_per_each_month_in_year
+
+
+def count_expenses_per_category():
+    categories = Category.objects.all().values_list()
+    out = []
+    if categories:
+        for category in categories:
+            out.append(Expense.objects.filter(category__id=category[0]).count())
+    return out

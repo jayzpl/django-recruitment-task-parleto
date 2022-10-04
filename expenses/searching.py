@@ -1,6 +1,5 @@
 from .forms import Sorting
 from datetime import datetime
-from .models import Category, Expense
 
 
 def sort_by_field(queryset, sort_type: list[str], field: str):
@@ -58,13 +57,4 @@ def sort_by_categories(queryset, categories_sorting):
         return sort_by_field(queryset, categories_sorting, 'category')
     else:
         return queryset
-
-
-def count_expenses_per_category():
-    categories = Category.objects.all().values_list()
-    out = []
-    if categories:
-        for category in categories:
-            out.append(Expense.objects.filter(category__id=category[0]).count())
-    return out
 

@@ -1,7 +1,7 @@
 from django.views.generic.list import ListView
 from .forms import ExpenseSearchForm
 from .models import Expense, Category
-from .reports import summary_per_category, calculate_total_amount, summary_per_year, summary_per_month
+from .reports import *
 from .searching import *
 
 
