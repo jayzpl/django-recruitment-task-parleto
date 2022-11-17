@@ -44,6 +44,9 @@
 </table>
 
 {% include "_pagination.html" %}
+<div>
+	<p>Total amount spent: {{total_amount|floatformat:2}}</p>
+</div>
 <hr>
 <table border="1">
   <caption>Summary per category</caption>
@@ -51,6 +54,30 @@
     {% for category, total in summary_per_category.items %}
 	<tr>
 		<td>{{category}}:</td>
+		<td>{{total|floatformat:2}}</td>
+	</tr>
+	{% endfor %}
+  </tr>
+</table>
+<br>
+<table border="1">
+  <caption>Summary per year</caption>
+  <tr>
+    {% for year, total in summary_per_year.items %}
+	<tr>
+		<td>{{year}}:</td>
+		<td>{{total|floatformat:2}}</td>
+	</tr>
+	{% endfor %}
+  </tr>
+</table>
+<br>
+<table border="1">
+  <caption>Summary per month</caption>
+  <tr>
+    {% for date, total in summary_per_month.items %}
+	<tr>
+		<td>{{date}}:</td>
 		<td>{{total|floatformat:2}}</td>
 	</tr>
 	{% endfor %}
